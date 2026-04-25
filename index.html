@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ReefOS</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<meta name="theme-color" content="#020814">
+<style>
+:root{--bg:#020814;--card:#071827;--line:#16466f;--cyan:#00e5ff;--blue:#128cff;--text:#f4fbff;--muted:#91adc0;--good:#22f28b;--warn:#ffb02e;--bad:#ff4269;--purple:#a641ff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:radial-gradient(circle at 50% -12%,rgba(0,229,255,.18),transparent 35%),linear-gradient(#020814,#000);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+.app{max-width:660px;margin:auto;min-height:100vh;padding:16px 14px 106px}
+header{display:grid;grid-template-columns:56px 1fr 56px;align-items:center;margin:6px 0 16px}
+.iconBtn{width:56px;height:56px;border-radius:18px;border:1px solid var(--line);background:rgba(7,24,39,.9);color:#d8f8ff;font-size:28px;display:grid;place-items:center}
+.brand{text-align:center}.brand h1{margin:0;font-size:42px;font-weight:950}.brand span{color:var(--cyan)}
+.brand p{margin:4px 0 0;color:#d8f8ff;letter-spacing:5px;font-size:11px;font-weight:900}
+.card{background:linear-gradient(180deg,rgba(7,24,39,.96),rgba(2,9,16,.98));border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 14px 36px rgba(0,0,0,.28)}
+.cardTitle{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.cardTitle h2{margin:0;font-size:21px;text-transform:uppercase}.cardTitle span{color:var(--cyan);font-weight:900}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.param,.tool{border:1px solid var(--line);border-radius:17px;background:linear-gradient(180deg,rgba(10,31,52,.94),rgba(3,11,19,.98));padding:14px}
+.param{min-height:145px}.param.good{border-color:rgba(34,242,139,.35)}.param.warn{border-color:rgba(255,176,46,.4)}.param.bad{border-color:rgba(255,66,105,.45)}
+.pTop{display:flex;gap:9px;align-items:center}.pIcon{width:34px;height:34px;border:1px solid currentColor;border-radius:50%;display:grid;place-items:center;font-weight:950;font-size:13px}.pName{font-size:17px;font-weight:950}
+.pVal{font-size:37px;font-weight:950;margin-top:20px;letter-spacing:-.7px}.pUnit{font-size:15px;color:#c7d9e5;margin-left:4px;font-weight:800}.pIdeal{margin-top:9px;color:var(--muted)}
+button,.btn{border:0;border-radius:14px;padding:14px;font-size:16px;font-weight:950;color:white;background:linear-gradient(135deg,var(--blue),var(--cyan));width:100%;margin-top:8px}
+.secondary{border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text)}
+.danger{border:1px solid rgba(255,66,105,.5);background:rgba(255,66,105,.1);color:var(--bad)}
+label{display:block;color:var(--muted);font-weight:900;margin:10px 0 6px}
+input,select,textarea{width:100%;background:#020812;border:1px solid var(--line);border-radius:13px;color:var(--text);padding:13px;font-size:16px;margin-bottom:8px}
+textarea{min-height:90px}.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(0,5,10,.97);border-top:1px solid var(--line);z-index:50;overflow-x:auto}
+.tabInner{max-width:660px;margin:auto;display:flex;gap:3px;padding:8px 6px calc(8px + env(safe-area-inset-bottom));min-width:620px}
+.tab{flex:1;text-align:center;border-radius:14px;color:#cdd9e3;padding:8px 2px;font-weight:900;font-size:11px}.tab span{display:block;font-size:20px}.tab.active{background:rgba(18,140,255,.2);color:var(--cyan)}
+.hidden{display:none!important}
+.item{border:1px solid var(--line);background:rgba(4,12,20,.96);border-radius:14px;padding:12px;margin-bottom:10px}.item p{color:var(--muted);line-height:1.35;margin:6px 0}.row{display:flex;justify-content:space-between;gap:10px}
+.toolGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tool{min-height:96px}.tool b{display:block;font-size:17px;margin-bottom:7px}.tool p{margin:0;color:var(--muted);line-height:1.3}
+.photoGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.photo{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#020812}.photo img{width:100%;height:170px;object-fit:cover;display:block}.photo div{padding:10px}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:5px 9px;color:var(--cyan);font-weight:900;font-size:12px;margin-top:5px}
+canvas{width:100%;height:260px;background:#020812;border:1px solid var(--line);border-radius:14px}
+.statGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{border:1px solid var(--line);border-radius:15px;padding:14px;text-align:center;background:rgba(4,12,20,.96)}.stat small{display:block;color:var(--muted);font-weight:900}.stat b{font-size:28px;color:var(--cyan)}
+@media(max-width:390px){.grid,.toolGrid,.photoGrid,.statGrid{grid-template-columns:1fr}.brand h1{font-size:34px}.brand p{letter-spacing:3px}.tabInner{min-width:600px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><button class="iconBtn" onclick="show('settings')">☰</button><div class="brand"><h1>Reef<span>OS</span></h1><p>SMART REEF MANAGEMENT</p></div><button class="iconBtn" onclick="show('analytics')">📈</button></header>
+
+<section id="home">
+ <div class="card">
+  <div class="cardTitle"><h2>Current Parameters</h2><span id="statusText">Ready</span></div>
+  <div id="paramGrid" class="grid"></div>
+  <button onclick="show('test')">+ Add Water Test</button>
+ </div>
+ <div class="card">
+  <div class="cardTitle"><h2>Smart Insights</h2><span>Beta</span></div>
+  <div id="insights"></div>
+ </div>
+ <div class="card">
+  <div class="cardTitle"><h2>ReefOS Tools</h2><span>Stable V2</span></div>
+  <div class="toolGrid">
+   <div class="tool" onclick="show('growth')"><b>📸 Coral Library</b><p>Unlimited corals and growth photos.</p></div>
+   <div class="tool" onclick="show('reminders')"><b>⏰ Reminders</b><p>Water changes, testing and maintenance.</p></div>
+   <div class="tool" onclick="show('equipment')"><b>⚙️ Equipment</b><p>Name, model, price and clean schedule.</p></div>
+   <div class="tool" onclick="show('cycle')"><b>🧪 Cycle Tracker</b><p>Ammonia, nitrite and nitrate cycle logs.</p></div>
+   <div class="tool" onclick="show('value')"><b>£ Tank Value</b><p>Equipment, stock and livestock costs.</p></div>
+   <div class="tool" onclick="show('sponsors')"><b>🤝 Shops</b><p>Sponsor shops and reef partner links.</p></div>
+  </div>
+ </div>
+</section>
+
+<section id="test" class="hidden">
+ <div class="card form"><div class="cardTitle"><h2>Add Water Test</h2></div>
+  <label>Date</label><input id="date" type="date">
+  <div class="formGrid">
+   <div><label>Temperature °C</label><input id="temperature" type="number" step="any"></div><div><label>Specific Gravity</label><input id="salinity" type="number" step="any"></div>
+   <div><label>pH</label><input id="ph" type="number" step="any"></div><div><label>Alkalinity dKH</label><input id="alkalinity" type="number" step="any"></div>
+   <div><label>Calcium ppm</label><input id="calcium" type="number" step="any"></div><div><label>Magnesium ppm</label><input id="magnesium" type="number" step="any"></div>
+   <div><label>Nitrate ppm</label><input id="nitrate" type="number" step="any"></div><div><label>Phosphate ppm</label><input id="phosphate" type="number" step="any"></div>
+  </div><label>Notes</label><textarea id="notes"></textarea><button onclick="saveTest()">Save Reading</button>
+ </div>
+</section>
+
+<section id="history" class="hidden"><div class="card"><div class="cardTitle"><h2>History</h2></div><div id="historyList"></div></div></section>
+<section id="graphs" class="hidden"><div class="card"><div class="cardTitle"><h2>Graphs</h2></div><select id="graphParam" onchange="drawGraph()"></select><br><br><canvas id="chart" width="900" height="300"></canvas></div></section>
+
+<section id="reminders" class="hidden">
+ <div class="card form"><div class="cardTitle"><h2>Reminders</h2><span id="reminderCount">0</span></div>
+  <label>Type</label><select id="remType"><option>Water Change</option><option>Water Test</option><option>Filter Management</option><option>Clean Sump</option><option>Clean Skimmer</option><option>Coral Growth Photo</option><option>Equipment Maintenance</option><option>Custom</option></select>
+  <label>Name</label><input id="remName" placeholder="Sunday water change">
+  <div class="formGrid"><div><label>Due Date</label><input id="remDate" type="date"></div><div><label>Repeat</label><select id="remRepeat"><option value="0">No repeat</option><option value="7">Weekly</option><option value="14">Every 2 weeks</option><option value="30">Monthly</option><option value="60">Every 2 months</option><option value="90">Every 3 months</option></select></div></div>
+  <label>Notes</label><textarea id="remNotes"></textarea><button onclick="saveReminder()">Save Reminder</button>
+ </div><div class="card"><div class="cardTitle"><h2>Upcoming</h2></div><div id="remList"></div></div>
+</section>
+
+<section id="equipment" class="hidden">
+ <div class="card form"><div class="cardTitle"><h2>Equipment</h2><span id="equipTotal">£0</span></div>
+  <label>Type</label><select id="eqType"><option>Return Pump</option><option>Powerhead</option><option>Skimmer</option><option>Heater</option><option>Light</option><option>UV Steriliser</option><option>Dosing Pump</option><option>Other</option></select>
+  <label>Name</label><input id="eqName"><label>Model</label><input id="eqModel">
+  <div class="formGrid"><div><label>Price £</label><input id="eqPrice" type="number" step="any"></div><div><label>Last Cleaned</label><input id="eqCleaned" type="date"></div></div>
+  <label>Clean Schedule</label><select id="eqSchedule"><option value="30">Monthly</option><option value="60">Every 2 months</option><option value="90">Every 3 months</option><option value="180">Every 6 months</option></select>
+  <label>Notes</label><textarea id="eqNotes"></textarea><button onclick="saveEquipment()">Save Equipment</button>
+ </div><div class="card"><div class="cardTitle"><h2>Equipment List</h2></div><div id="eqList"></div></div>
+</section>
+
+<section id="growth" class="hidden">
+ <div class="card form"><div class="cardTitle"><h2>Coral Library</h2><span id="coralCount">0</span></div>
+  <label>Coral Name</label><input id="coralName"><label>Type</label><select id="coralType"><option>LPS</option><option>SPS</option><option>Soft Coral</option><option>Zoas</option><option>Mushroom</option><option>Full Tank Shot</option><option>Coralline Growth</option><option>Algae / Refugium</option><option>Other</option></select>
+  <label>Location</label><input id="coralLocation"><label>Notes</label><textarea id="coralNotes"></textarea><button onclick="saveCoral()">Create Coral</button>
+ </div><div class="card"><div class="cardTitle"><h2>Your Corals</h2></div><div id="coralList"></div></div>
+</section>
+
+<section id="coralDetail" class="hidden">
+ <div class="card form"><div class="cardTitle"><h2 id="detailTitle">Coral</h2><span onclick="show('growth')">Back</span></div><p id="detailMeta" style="color:var(--muted)"></p>
+  <label>Photo Date</label><input id="photoDate" type="date"><label>Photo</label><input id="photoInput" type="file" accept="image/*"><label>Notes</label><textarea id="photoNotes"></textarea><button onclick="savePhoto()">Save Photo</button>
+ </div><div class="card"><div class="cardTitle"><h2>Photo Timeline</h2><span id="photoCount">0</span></div><div id="photoList" class="photoGrid"></div></div>
+</section>
+
+<section id="cycle" class="hidden">
+ <div class="card form"><div class="cardTitle"><h2>Cycle Tracker</h2><span id="cycleStage">Start</span></div>
+  <label>Cycle Start Date</label><input id="cycleStart" type="date"><label>Reading Date</label><input id="cycleDate" type="date">
+  <div class="formGrid"><div><label>Ammonia ppm</label><input id="ammonia" type="number" step="any"></div><div><label>Nitrite ppm</label><input id="nitrite" type="number" step="any"></div><div><label>Nitrate ppm</label><input id="cycleNitrate" type="number" step="any"></div><div><label>Used / Added</label><input id="cycleUsed"></div></div>
+  <label>Notes</label><textarea id="cycleNotes"></textarea><button onclick="saveCycle()">Save Cycle Reading</button>
+ </div><div class="card"><div class="cardTitle"><h2>Cycle Graph</h2></div><canvas id="cycleChart" width="900" height="300"></canvas></div><div class="card"><div class="cardTitle"><h2>Cycle Log</h2></div><div id="cycleList"></div></div>
+</section>
+
+<section id="value" class="hidden">
+ <div class="card form"><div class="cardTitle"><h2>Tank Value</h2><span id="valueTotal">£0</span></div>
+  <label>Category</label><select id="valueCat"><option>Equipment</option><option>Coral</option><option>Fish</option><option>Clean-up Crew</option><option>Dry Goods</option><option>Other</option></select>
+  <label>Item</label><input id="valueName"><div class="formGrid"><div><label>Value £</label><input id="valuePrice" type="number" step="any"></div><div><label>Date</label><input id="valueDate" type="date"></div></div>
+  <label>Notes</label><textarea id="valueNotes"></textarea><button onclick="saveValue()">Save Item</button>
+ </div><div class="card"><div class="cardTitle"><h2>Inventory</h2></div><div id="valueList"></div></div>
+</section>
+
+<section id="sponsors" class="hidden">
+ <div class="card form"><div class="cardTitle"><h2>Sponsors / Shops</h2><span id="sponsorCount">0</span></div>
+  <label>Shop Name</label><input id="sponsorName"><label>Category</label><select id="sponsorCat"><option>Corals</option><option>Marine Fish</option><option>Equipment</option><option>Dry Goods</option><option>Local Fish Shop</option><option>Online Store</option></select>
+  <label>Website URL</label><input id="sponsorUrl" placeholder="https://example.com"><label>Offer / Code</label><input id="sponsorCode"><label>Description</label><textarea id="sponsorDesc"></textarea><button onclick="saveSponsor()">Save Sponsor</button>
+ </div><div class="card"><div class="cardTitle"><h2>Featured Shops</h2></div><div id="sponsorList"></div></div>
+</section>
+
+<section id="analytics" class="hidden">
+ <div class="card"><div class="cardTitle"><h2>Analytics</h2><span>Local</span></div><div class="statGrid"><div class="stat"><small>App Opens</small><b id="anaOpens">0</b></div><div class="stat"><small>Tests</small><b id="anaTests">0</b></div><div class="stat"><small>Corals</small><b id="anaCorals">0</b></div><div class="stat"><small>Equipment</small><b id="anaEquip">0</b></div></div></div>
+</section>
+
+<section id="settings" class="hidden">
+ <div class="card"><div class="cardTitle"><h2>Settings</h2></div><button onclick="exportBackup()">Export Backup</button><button class="secondary" onclick="importInput.click()">Import Backup</button><input id="importInput" type="file" accept="application/json" class="hidden" onchange="importBackup(this)"></div>
+</section>
+</div>
+
+<nav class="tabs"><div class="tabInner">
+ <div class="tab active" onclick="show('home',this)"><span>⌂</span>Home</div><div class="tab" onclick="show('graphs',this)"><span>⌁</span>Graphs</div><div class="tab" onclick="show('test',this)"><span>⚗</span>Test</div><div class="tab" onclick="show('reminders',this)"><span>⏰</span>Jobs</div><div class="tab" onclick="show('growth',this)"><span>🪸</span>Corals</div><div class="tab" onclick="show('equipment',this)"><span>⚙️</span>Kit</div>
+</div></nav>
+
+<script>
+const params=[{id:'temperature',name:'Temperature',unit:'°C',ideal:[24,26],warn:[23,27],icon:'🌡',idealText:'24–26 °C'},{id:'salinity',name:'Specific Gravity',unit:'SG',ideal:[1.024,1.026],warn:[1.023,1.027],icon:'≋',idealText:'1.024–1.026 SG'},{id:'ph',name:'pH',unit:'',ideal:[7.8,8.4],warn:[7.7,8.5],icon:'pH',idealText:'7.8–8.4'},{id:'alkalinity',name:'Alkalinity',unit:'dKH',ideal:[8,10],warn:[7,11],icon:'Alk',idealText:'8–10 dKH'},{id:'calcium',name:'Calcium',unit:'ppm',ideal:[400,460],warn:[380,480],icon:'Ca',idealText:'400–460 ppm'},{id:'magnesium',name:'Magnesium',unit:'ppm',ideal:[1250,1450],warn:[1200,1500],icon:'Mg',idealText:'1250–1450 ppm'},{id:'nitrate',name:'Nitrate',unit:'ppm',ideal:[2,25],warn:[0,50],icon:'NO₃',idealText:'2–25 ppm'},{id:'phosphate',name:'Phosphate',unit:'ppm',ideal:[0.03,0.1],warn:[0.01,0.2],icon:'PO₄',idealText:'0.03–0.1 ppm'}];
+function read(k,f){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(f))}catch(e){return f}}function write(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function tests(){return read('reefos_tests',[])}function rems(){return read('reefos_reminders',[])}function equips(){return read('reefos_equipment',[])}function corals(){return read('reefos_corals',[])}function cycles(){return read('reefos_cycle',[])}function values(){return read('reefos_values',[])}function sponsors(){return read('reefos_sponsors',[])}
+function ana(k){let a=read('reefos_ana',{opens:0});a[k]=(a[k]||0)+1;write('reefos_ana',a)}
+if(!sessionStorage.getItem('opened')){ana('opens');sessionStorage.setItem('opened','1')}
+function show(id,tab){document.querySelectorAll('section').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));if(tab)tab.classList.add('active');window.scrollTo(0,0);render()}
+function stat(p,v){if(v==='--')return '';let n=Number(v);if(n>=p.ideal[0]&&n<=p.ideal[1])return 'good';if(n>=p.warn[0]&&n<=p.warn[1])return 'warn';return 'bad'}function latest(){let a=tests();return a.length?a[a.length-1]:null}
+function renderParams(){let l=latest();paramGrid.innerHTML=params.map(p=>{let v=l?l[p.id]:'--';let col=p.id==='nitrate'?'#22f28b':p.id==='phosphate'?'#ffb02e':p.id==='ph'?'#a641ff':'#00e5ff';return `<div class="param ${stat(p,v)}"><div class="pTop"><div class="pIcon" style="color:${col}">${p.icon}</div><div class="pName">${p.name}</div></div><div class="pVal">${v}<span class="pUnit">${v==='--'?'':p.unit}</span></div><div class="pIdeal">Ideal: ${p.idealText}</div></div>`}).join('');statusText.textContent=l?'Saved':'Ready'}
+function saveTest(){let item={date:date.value||new Date().toISOString().slice(0,10),notes:notes.value};for(let p of params){let v=document.getElementById(p.id).value;if(v===''){alert('Add '+p.name);return}item[p.id]=Number(v)}let a=tests();a.push(item);a.sort((x,y)=>new Date(x.date)-new Date(y.date));write('reefos_tests',a);ana('tests');document.querySelectorAll('#test input[type=number],#test textarea').forEach(e=>e.value='');render();show('home')}
+function renderInsights(){let l=latest();if(!l){insights.innerHTML='<div class="item"><b>Ready</b><p>Add a test to generate smarter reef advice.</p></div>';return}let out=[];if(l.nitrate>50)out.push(['🚨 Nitrate critical',`Nitrate is ${l.nitrate} ppm. Review feeding, detritus, filtration and water change routine.`]);else if(l.nitrate>25)out.push(['⚠️ Nitrate elevated',`Nitrate is ${l.nitrate} ppm. Clean mechanical filtration and check nutrient export.`]);if(l.phosphate>0.1)out.push(['⚠️ Phosphate elevated',`Phosphate is ${l.phosphate} ppm. Watch algae and reduce slowly.`]);if(l.salinity<1.024||l.salinity>1.026)out.push(['⚠️ SG check',`Specific gravity is ${l.salinity}. Recheck calibration and adjust slowly.`]);if(!out.length)out.push(['✅ Stable','Core parameters look in range. Keep logging weekly.']);insights.innerHTML=out.map(x=>`<div class="item"><b>${x[0]}</b><p>${x[1]}</p></div>`).join('')}
+function renderHistory(){let a=tests().slice().reverse();historyList.innerHTML=a.length?a.map(t=>`<div class="item"><div class="row"><b>${t.date}</b><span>NO3 ${t.nitrate} · PO4 ${t.phosphate}</span></div><p>Temp ${t.temperature} · SG ${t.salinity} · pH ${t.ph} · Alk ${t.alkalinity}</p>${t.notes?`<p>${t.notes}</p>`:''}</div>`).join(''):'<p style="color:var(--muted)">No tests saved yet.</p>'}
+function drawGraph(){let id=graphParam.value,c=chart,ctx=c.getContext('2d'),a=tests().map(t=>Number(t[id]));ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle='#91adc0';ctx.font='15px Arial';if(a.length<2){ctx.fillText('Add at least 2 readings to see a graph.',25,130);return}let min=Math.min(...a),max=Math.max(...a);if(min===max){min-=1;max+=1}ctx.strokeStyle='#00e5ff';ctx.lineWidth=4;ctx.beginPath();a.forEach((v,i)=>{let x=i/(a.length-1)*c.width,y=c.height-24-((v-min)/(max-min))*(c.height-48);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()}
+function days(d){let n=new Date();n.setHours(0,0,0,0);let x=new Date(d);x.setHours(0,0,0,0);return Math.round((x-n)/86400000)}function dueText(n){return n<0?`${Math.abs(n)} days overdue`:n===0?'Due today':n===1?'Tomorrow':`In ${n} days`}function addDays(d,n){let x=new Date(d);x.setDate(x.getDate()+Number(n));return x.toISOString().slice(0,10)}
+function saveReminder(){let a=rems();a.push({id:Date.now()+'',type:remType.value,name:remName.value||remType.value,due:remDate.value||new Date().toISOString().slice(0,10),repeat:Number(remRepeat.value),notes:remNotes.value});write('reefos_reminders',a);remName.value='';remNotes.value='';render()}
+function doneRem(id){let a=rems(),i=a.findIndex(x=>x.id===id);if(i>-1){if(a[i].repeat>0)a[i].due=addDays(a[i].due,a[i].repeat);else a.splice(i,1);write('reefos_reminders',a);render()}}
+function renderRems(){let a=rems().sort((x,y)=>new Date(x.due)-new Date(y.due));reminderCount.textContent=a.length;remList.innerHTML=a.length?a.map(r=>`<div class="item"><div class="row"><b>${r.name}</b><span>${dueText(days(r.due))}</span></div><p>${r.type} · ${r.due}</p>${r.notes?`<p>${r.notes}</p>`:''}<button onclick="doneRem('${r.id}')">Done</button></div>`).join(''):'<p style="color:var(--muted)">No reminders yet.</p>'}
+function saveEquipment(){if(!eqName.value){alert('Add equipment name');return}let a=equips(),it={id:Date.now()+'',type:eqType.value,name:eqName.value,model:eqModel.value,price:Number(eqPrice.value||0),cleaned:eqCleaned.value||new Date().toISOString().slice(0,10),schedule:Number(eqSchedule.value),notes:eqNotes.value};a.push(it);write('reefos_equipment',a);let r=rems();r.push({id:'eq'+it.id,type:'Equipment Maintenance',name:'Clean '+it.name,due:addDays(it.cleaned,it.schedule),repeat:it.schedule,notes:it.model});write('reefos_reminders',r);eqName.value='';eqModel.value='';eqPrice.value='';eqNotes.value='';render()}
+function renderEquip(){let a=equips();equipTotal.textContent='£'+a.reduce((s,x)=>s+Number(x.price||0),0).toFixed(0);eqList.innerHTML=a.length?a.map(e=>`<div class="item"><div class="row"><b>${e.name}</b><span>£${e.price}</span></div><p>${e.type} · ${e.model||''}</p><p>Last cleaned: ${e.cleaned} · Next: ${addDays(e.cleaned,e.schedule)}</p>${e.notes?`<p>${e.notes}</p>`:''}</div>`).join(''):'<p style="color:var(--muted)">No equipment added yet.</p>'}
+let selectedCoral=null;function saveCoral(){if(!coralName.value){alert('Add coral name');return}let a=corals();a.push({id:Date.now()+'',name:coralName.value,type:coralType.value,location:coralLocation.value,notes:coralNotes.value,photos:[]});write('reefos_corals',a);coralName.value='';coralLocation.value='';coralNotes.value='';render()}
+function openCoral(id){selectedCoral=id;show('coralDetail');renderCoralDetail()}function savePhoto(){let f=photoInput.files[0];if(!f){alert('Choose photo');return}let reader=new FileReader();reader.onload=()=>{let a=corals(),c=a.find(x=>x.id===selectedCoral);c.photos.push({id:Date.now()+'',date:photoDate.value||new Date().toISOString().slice(0,10),notes:photoNotes.value,img:reader.result});write('reefos_corals',a);photoInput.value='';photoNotes.value='';renderCoralDetail();renderCorals()};reader.readAsDataURL(f)}
+function renderCorals(){let a=corals();coralCount.textContent=a.length;coralList.innerHTML=a.length?a.map(c=>{let p=c.photos||[],first=p[0],last=p[p.length-1];return `<div class="item"><h3>${c.name}</h3><span class="pill">${c.type}</span><p>${c.location||''}</p><p>${p.length} photos</p><div class="photoGrid"><div class="photo">${first?`<img src="${first.img}">`:'<div>First photo</div>'}</div><div class="photo">${last?`<img src="${last.img}">`:'<div>Latest photo</div>'}</div></div><button onclick="openCoral('${c.id}')">View / Add Photos</button></div>`}).join(''):'<p style="color:var(--muted)">No corals yet.</p>'}
+function renderCoralDetail(){let c=corals().find(x=>x.id===selectedCoral);if(!c)return;detailTitle.textContent=c.name;detailMeta.textContent=`${c.type} · ${c.location||''}`;photoCount.textContent=(c.photos||[]).length+' photos';photoList.innerHTML=(c.photos||[]).slice().reverse().map(p=>`<div class="photo"><img src="${p.img}"><div><b>${p.date}</b><p>${p.notes||''}</p></div></div>`).join('')||'<p style="color:var(--muted)">No photos yet.</p>'}
+function saveCycle(){let a=cycles();a.push({id:Date.now()+'',start:cycleStart.value,date:cycleDate.value||new Date().toISOString().slice(0,10),ammonia:Number(ammonia.value||0),nitrite:Number(nitrite.value||0),nitrate:Number(cycleNitrate.value||0),used:cycleUsed.value,notes:cycleNotes.value});write('reefos_cycle',a);ammonia.value='';nitrite.value='';cycleNitrate.value='';cycleUsed.value='';cycleNotes.value='';render()}
+function renderCycle(){let a=cycles();let l=a[a.length-1];cycleStage.textContent=l?(l.ammonia>.25?'Starting':l.nitrite>.25?'Nitrite phase':l.nitrate>2?'Nearly cycled':'Tracking'):'Start';cycleList.innerHTML=a.slice().reverse().map(x=>`<div class="item"><div class="row"><b>${x.date}</b><span>NH3 ${x.ammonia} · NO2 ${x.nitrite} · NO3 ${x.nitrate}</span></div>${x.used?`<p>Used: ${x.used}</p>`:''}${x.notes?`<p>${x.notes}</p>`:''}</div>`).join('')||'<p style="color:var(--muted)">No cycle readings yet.</p>';drawCycle()}
+function drawCycle(){let c=cycleChart,ctx=c.getContext('2d'),a=cycles();ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle='#91adc0';ctx.font='15px Arial';if(a.length<2){ctx.fillText('Add 2 cycle readings to see a graph.',25,130);return}let vals=[...a.map(x=>x.ammonia),...a.map(x=>x.nitrite),...a.map(x=>x.nitrate)],max=Math.max(...vals,1);['ammonia','nitrite','nitrate'].forEach((key,idx)=>{ctx.strokeStyle=['#00e5ff','#ffb02e','#22f28b'][idx];ctx.beginPath();a.forEach((r,i)=>{let x=i/(a.length-1)*c.width,y=c.height-24-(Number(r[key])/max)*(c.height-48);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()})}
+function saveValue(){if(!valueName.value){alert('Add item');return}let a=values();a.push({id:Date.now()+'',cat:valueCat.value,name:valueName.value,price:Number(valuePrice.value||0),date:valueDate.value||new Date().toISOString().slice(0,10),notes:valueNotes.value});write('reefos_values',a);valueName.value='';valuePrice.value='';valueNotes.value='';render()}
+function renderValue(){let a=values();valueTotal.textContent='£'+a.reduce((s,x)=>s+x.price,0).toFixed(0);valueList.innerHTML=a.map(x=>`<div class="item"><div class="row"><b>${x.name}</b><span>£${x.price}</span></div><span class="pill">${x.cat}</span><p>${x.date}</p>${x.notes?`<p>${x.notes}</p>`:''}</div>`).join('')||'<p style="color:var(--muted)">No value items yet.</p>'}
+function saveSponsor(){if(!sponsorName.value||!sponsorUrl.value){alert('Add name and website');return}let a=sponsors();let url=sponsorUrl.value.startsWith('http')?sponsorUrl.value:'https://'+sponsorUrl.value;a.push({id:Date.now()+'',name:sponsorName.value,cat:sponsorCat.value,url,code:sponsorCode.value,desc:sponsorDesc.value});write('reefos_sponsors',a);sponsorName.value='';sponsorUrl.value='';sponsorCode.value='';sponsorDesc.value='';render()}
+function renderSponsors(){let a=sponsors();sponsorCount.textContent=a.length;sponsorList.innerHTML=a.map(s=>`<div class="item"><div class="row"><b>${s.name}</b><span class="pill">${s.cat}</span></div>${s.desc?`<p>${s.desc}</p>`:''}${s.code?`<p>Offer: ${s.code}</p>`:''}<button onclick="window.open('${s.url}','_blank')">Visit Website</button></div>`).join('')||'<p style="color:var(--muted)">No sponsors added yet.</p>'}
+function renderAnalytics(){let a=read('reefos_ana',{opens:0});anaOpens.textContent=a.opens||0;anaTests.textContent=tests().length;anaCorals.textContent=corals().length;anaEquip.textContent=equips().length}
+function exportBackup(){let data={};Object.keys(localStorage).forEach(k=>{if(k.startsWith('reefos_'))data[k]=localStorage.getItem(k)});let b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ReefOS_Backup.json';a.click()}
+function importBackup(input){let f=input.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{let d=JSON.parse(r.result);Object.entries(d).forEach(([k,v])=>localStorage.setItem(k,v));location.reload()};r.readAsText(f)}
+function render(){[date,remDate,eqCleaned,photoDate,cycleStart,cycleDate,valueDate].forEach(el=>{if(el&&!el.value)el.value=new Date().toISOString().slice(0,10)});if(!graphParam.options.length)params.forEach(p=>graphParam.add(new Option(p.name,p.id)));renderParams();renderInsights();renderHistory();renderRems();renderEquip();renderCorals();renderCycle();renderValue();renderSponsors();renderAnalytics();drawGraph()}
+render();
+</script>
+</body></html>
