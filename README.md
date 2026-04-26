@@ -1,7 +1,7 @@
-# 🌊 ReefOS
+# 🌊 AquoraX
 ### Smart Reef Management
 
-ReefOS is a powerful, all-in-one reef tank management app built for hobbyists who want full control over their system.
+ AquoraX is a powerful, all-in-one reef tank management app built for hobbyists who want full control over their system.
 
 Track your water parameters, log coral growth, manage equipment, and monitor your tank like a pro.
 
@@ -36,7 +36,7 @@ Track your water parameters, log coral growth, manage equipment, and monitor you
 
 ## 🌍 Built For The Reefing Community
 
-ReefOS is designed to make reef keeping:
+ AquoraX is designed to make reef keeping:
 - simpler  
 - smarter  
 - more trackable  
@@ -64,4 +64,4 @@ Built by Tommy (Tommy the Fish Guy)
 
 Got ideas or features you want?
 
-Drop them in the community or message me directly — ReefOS is growing fast.
+Drop them in the community or message me directly —  AquoraX is growing fast.
